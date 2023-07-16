@@ -1,9 +1,6 @@
-using IA3Digital.Client.Data.IA3LocalDataBase;
 using IA3Digital.Server.Data;
 using IA3Digital.Server.Models;
-using IA3DigitalDB.Data.IA3Digital;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
 namespace IA3Digital
@@ -27,7 +24,7 @@ namespace IA3Digital
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             // Scoped creates an instance for each user
-            builder.Services.AddScoped<Table>();
+            //builder.Services.AddScoped<Table>();
 
             builder.Services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -37,8 +34,8 @@ namespace IA3Digital
 
             // Read the connection string from the appsettings.json file
             // Set the database connection for the IA3LocalDatabaseContext
-            builder.Services.AddDbContext<IA3DigitalDB.Data.IA3Digital.IA3LocalDatabaseContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection")));
+            //builder.Services.AddDbContext<IA3DigitalDB.Data.IA3Digital.IA3LocalDatabaseContext>(options =>
+            //options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection")));
 
             var app = builder.Build();
 

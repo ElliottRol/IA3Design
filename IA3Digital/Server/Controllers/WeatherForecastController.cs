@@ -58,7 +58,7 @@ namespace IA3Digital.Server.Controllers
         public void Post([FromBody] TableDTO newTableEntry)
         {
             var currentUser = User?.Identity?.Name;
-            _logger.LogInformation($"Creating new weather for user {currentUser}: {newTableEntry}");
+            _logger.LogInformation($"Creating new weather for user {currentUser}");
 
             // create a new table to store from the data from the user interface
             var table = new Models.Table()
@@ -81,7 +81,7 @@ namespace IA3Digital.Server.Controllers
         public void Put([FromBody] TableDTO updateTableEntry)
         {
              var currentUser = User?.Identity?.Name;
-            _logger.LogInformation($"Updating weather for user {currentUser}: {updateTableEntry}");
+            _logger.LogInformation($"Updating weather for user {currentUser} - ID: {updateTableEntry.Id}");
 
             // Find the existing Weather Forecast record using the id
             var existingTable =
@@ -109,7 +109,7 @@ namespace IA3Digital.Server.Controllers
         public void Delete(int id)
         {
             var currentUser = User?.Identity?.Name;
-            _logger.LogInformation($"Deleting weather for user {currentUser}: {id}");
+            _logger.LogInformation($"Deleting weather for user {currentUser} - ID: {id}");
 
             // Find the existing Weather Forecast record using the id
             var existingTable =

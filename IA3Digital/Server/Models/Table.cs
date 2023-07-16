@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IA3DigitalDB.Data.IA3Digital.Server
+namespace IA3Digital.Server.Models
 {
     public partial class Table
     {

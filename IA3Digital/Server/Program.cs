@@ -1,6 +1,6 @@
 using IA3Digital.Server.Data;
 using IA3Digital.Server.Models;
-using IA3DigitalDB.Data.IA3Digital.Server;
+using IA3Digital.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,11 +18,17 @@ namespace IA3Digital
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services
+                .AddDefaultIdentity<ApplicationUser>(options => {
+                    options.SignIn.RequireConfirmedAccount = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => {
+                    options.IdentityResources["openid"].UserClaims.Add("name");
+                    options.ApiResources.Single().UserClaims.Add("name");
+                });
 
             // Scoped creates an instance for each user
             builder.Services.AddScoped<Table>();
@@ -32,11 +38,6 @@ namespace IA3Digital
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-
-            // Read the connection string from the appsettings.json file
-            // Set the database connection for the IA3LocalDatabaseContext
-            builder.Services.AddDbContext<IA3LocalDatabaseContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection")));
 
             var app = builder.Build();
 

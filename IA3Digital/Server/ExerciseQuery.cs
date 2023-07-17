@@ -1,19 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using IA3Digital.Shared;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace IA3Digital.Server
 {
-
-    public class Exercise
-    {
-        public string? Name { get; set; }
-        public string? Type { get; set; }
-        public string? Muscle { get; set; }
-        public string? Equipement { get; set; }
-        public string? Difficulty { get; set; } 
-        public string? Instructions { get; set; }
-    }
-
 
     public class ExerciseQuery
     {

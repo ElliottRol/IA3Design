@@ -1,0 +1,91 @@
+﻿@page "/exercises"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using IA3Digital.Shared
+
+@inject HttpClient Http
+
+
+<h1>Excercises</h1>
+
+<!-- AuthorizeView allows us to only show sections of the page -->
+<!-- based on the security on the current user -->
+
+<AuthorizeView>
+
+    <!-- Show this section if the user is logged in -->
+
+    <Authorized>
+
+        <p>
+            Please Select a Muscle Group: 
+            <select @onchange="SelectMuscle">
+                <option value="" selected>(Please Select)</option>
+                <option value="biceps">Biceps</option>
+                <option value="triceps">Triceps</option>
+            </select>
+        </p>
+
+        @if (exercises != null)
+        {
+            <!-- Show the forecasts for the current user -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Muscle</th>
+                        <th>Difficulty</th>
+                        <th>Instructions</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in exercises)
+                    {
+                        <tr>
+                            <td>@e.Name</td>
+                            <td>@e.Muscle</td>
+                            <td>@e.Difficulty</td>
+                            <td>@e.Instructions</td>
+                            <td>
+                                <!-- Edit the current forecast 
+                                <button class="btn btn-primary"
+                                @onclick="(()=>EditForecast(f))">
+                                    Edit
+								</button> -->
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+    <!-- Show this section if the user is not logged in -->
+    <NotAuthorized>
+        <p>You're not signed in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+<PageTitle>Find Exercises</PageTitle>
+
+@code {
+    // Stores the forecasts displayed in a list
+    private List<Exercise>? exercises = null;
+
+
+    private async Task SelectMuscle(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            string newSelection = (string)e.Value;
+
+            if (string.IsNullOrWhiteSpace(newSelection))
+            {
+                // clear exercises
+                exercises = null;
+            } else {
+                // fetch exercises
+                exercises = await Http.GetFromJsonAsync<List<Exercise>?>($"/api/Exercise/{newSelection}");
+            }
+        }
+    }
+}

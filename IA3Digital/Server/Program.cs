@@ -1,3 +1,4 @@
+using IA3Digital.Server;
 using IA3Digital.Server.Data;
 using IA3Digital.Server.Models;
 using IA3Digital.Shared;
@@ -30,14 +31,17 @@ namespace IA3Digital
                     options.ApiResources.Single().UserClaims.Add("name");
                 });
 
-            // Scoped creates an instance for each user
-            builder.Services.AddScoped<Table>();
+            // Scoped creates an instance per request
+            builder.Services.AddScoped<ExerciseQuery>();
 
             builder.Services.AddAuthentication()
                 .AddIdentityServerJwt();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            // Add services to the container.
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 

@@ -8,11 +8,11 @@ namespace IA3Digital.Shared
 {
     public class Exercise
     {
-        public string? Name { get; set; }
-        public string? Type { get; set; }
-        public string? Muscle { get; set; }
-        public string? Equipement { get; set; }
-        public string? Difficulty { get; set; }
-        public string? Instructions { get; set; }
+        public string Name { get; set; } = default!;
+        public string Type { get; set; } = default!;
+        public string Muscle { get; set; } = default!;
+        public string Equipement { get; set; } = default!;
+        public string Difficulty { get; set; } = default!;
+        public string Instructions { get; set; } = default!;
     }
 }

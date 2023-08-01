@@ -37,7 +37,8 @@ namespace IA3Digital.Server.Controllers
                  .Where(x => x.UserName == currentUser)
                  // Use AsNoTracking to disable EF change tracking
                  // Use ToListAsync to avoid blocking a thread
-                 .AsNoTracking().ToListAsync();
+                 .AsNoTracking()
+                 .ToListAsync();
 
             // Convert to the DTO version to return to the UI
             return data.Select(d =>

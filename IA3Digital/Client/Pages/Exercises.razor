@@ -13,93 +13,218 @@
 
 <AuthorizeView>
 
-    <!-- Show this section if the user is logged in -->
+	<!-- Show this section if the user is logged in -->
 
-    <Authorized>
+	<Authorized>
+		<p>
+			Please Select a Muscle Group:
+			<select @onchange="SelectMuscle">
+				<option value="" selected>(Please Select)</option>
+				<option value="biceps">Biceps</option>
+				<option value="triceps">Triceps</option>
+				<option value="abdominals">Abdominals</option>
+				<option value="abductors">Abductors</option>
+				<option value="calves">Calves</option>
+				<option value="chest">Chest</option>
+				<option value="forearms">Forearms</option>
+				<option value="glutes">Glutes</option>
+				<option value="hamstrings">Hamstrings</option>
+				<option value="lats">Lats</option>
+				<option value="lower_back">Lower Back</option>
+				<option value="middle_back">Middle Back</option>
+				<option value="neck">Neck</option>
+				<option value="quadriceps">Quadriceps</option>
+				<option value="traps">Traps</option>
 
-        <p>
-            Please Select a Muscle Group: 
-            <select @onchange="SelectMuscle">
-                <option value="" selected>(Please Select)</option>
-                <option value="biceps">Biceps</option>
-                <option value="triceps">Triceps</option>
-                <option value="abdominals">Abdominals</option>
-                <option value="abductors">Abductors</option>
-                <option value="calves">Calves</option>
-                <option value="chest">Chest</option>
-                <option value="forearms">Forearms</option>
-                <option value="glutes">Glutes</option>
-                <option value="hamstrings">Hamstrings</option>
-                <option value="lats">Lats</option>
-                <option value="lower_back">Lower Back</option>
-                <option value="middle_back">Middle Back</option>
-                <option value="neck">Neck</option>
-                <option value="quadriceps">Quadriceps</option>
-                <option value="traps">Traps</option>
+			</select>
+		</p>
 
-            </select>
-        </p>
+		@if (exercises is not null)
+		{
+			<!-- Show the exercises -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Muscle</th>
+						<th>Difficulty</th>
+						<th>Instructions</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (selectedExercise is null)
+					{
+						foreach (var e in exercises)
+						{
+							<tr @onclick="(()=>SelectExercise(e))" class="clickable">
+								<td>@e.Name</td>
+								<td>@e.Muscle</td>
+								<td>@e.Difficulty</td>
+								<td>@e.Instructions</td>
+								<td />
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td>@selectedExercise.Name</td>
+							<td>@selectedExercise.Muscle</td>
+							<td>@selectedExercise.Difficulty</td>
+							<td>@selectedExercise.Instructions</td>
+							<td>
+								<button class="btn btn-primary" @onclick="(()=>SelectExercise(null))">
+									Close
+								</button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
 
-        @if (exercises != null)
-        {
-            <!-- Show the forecasts for the current user -->
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Muscle</th>
-                        <th>Difficulty</th>
-                        <th>Instructions</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var e in exercises)
-                    {
-                        <tr>
-                            <td>@e.Name</td>
-                            <td>@e.Muscle</td>
-                            <td>@e.Difficulty</td>
-                            <td>@e.Instructions</td>
-                            <td>
-                                <!-- Edit the current forecast 
-                                <button class="btn btn-primary"
-                                @onclick="(()=>EditForecast(f))">
-                                    Edit
-								</button> -->
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </Authorized>
-    <!-- Show this section if the user is not logged in -->
-    <NotAuthorized>
-        <p>You're not signed in.</p>
-    </NotAuthorized>
+			@if (selectedExercise is not null) 
+			{
+				if (comments is null) 
+				{
+					<p><em>Loading Comments...</em></p>
+				} 
+				else 
+				{
+					if(comments.Count == 0)
+					{
+						<p><em>No Comments yet</em></p>
+					} 
+					else 
+					{
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>User</th>
+									<th>Comment</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var c in comments)
+								{
+									<tr>
+										<td>@c.Id</td>
+										<td>@c.UserName</td>
+										<td>@c.Comment</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					}
+					<p>
+						<!-- add comment button -->
+						<button class="btn btn-primary" @onclick="AddComment">
+							Add Comment
+						</button>
+					</p>
+					@if (ShowPopup)
+					{
+						<!-- This is the popup to create or edit a forecast -->
+						<div class="modal" tabindex="-1" style="display:block" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h3 class="modal-title">Add Comment</h3>
+										<!-- Button to close the popup -->
+										<button type="button" class="close" @onclick="CloseComment">
+											<span aria-hidden="true">X</span>
+										</button>
+									</div>
+									<!-- Edit form for the current forecast -->
+									<div class="modal-body">
+										<textarea class="form-control" type="text" placeholder="Comment..." @bind="commentToAdd.Comment" />
+										<br />
+										<!-- Button to save the forecast -->
+										<button class="btn btn-primary" @onclick="SaveComment">
+											Save
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				}
+			}
+		}
+	</Authorized>
+	<!-- Show this section if the user is not logged in -->
+	<NotAuthorized>
+		<p>You're not signed in.</p>
+	</NotAuthorized>
 </AuthorizeView>
 <PageTitle>Find Exercises</PageTitle>
 
 @code {
-    // Stores the forecasts displayed in a list
-    private List<Exercise>? exercises = null;
+	// Stores the forecasts displayed in a list
+	private List<Exercise>? exercises = null;
+	private Exercise? selectedExercise = null;
+	private List<ExerciseComment>? comments = null;
+
+	private bool ShowPopup = false;
+	private ExerciseComment commentToAdd = new ExerciseComment();
 
 
-    private async Task SelectMuscle(ChangeEventArgs e)
-    {
-        if (e.Value is not null)
-        {
-            string newSelection = (string)e.Value;
+	private async Task SelectMuscle(ChangeEventArgs e)
+	{
+		if (e.Value is not null)
+		{
+			string newSelection = (string)e.Value;
 
-            if (string.IsNullOrWhiteSpace(newSelection))
-            {
-                // clear exercises
-                exercises = null;
-            } else {
-                // fetch exercises
-                exercises = await Http.GetFromJsonAsync<List<Exercise>?>($"/api/Exercise/{newSelection}");
-            }
-        }
-    }
+			if (string.IsNullOrWhiteSpace(newSelection))
+			{
+				// clear exercises
+				exercises = null;
+			}
+			else
+			{
+				// fetch exercises
+				exercises = await Http.GetFromJsonAsync<List<Exercise>?>($"/api/Exercise/{newSelection}");
+			}
+		}
+	}
+
+	private async Task SelectExercise(Exercise? exercise)
+	{
+		// select an exercise to view it by itself and load comments
+		selectedExercise = exercise;
+		comments = null;
+		if (exercise is not null)
+		{
+			await LoadComments(exercise);
+		}
+	}
+
+	private async Task LoadComments(Exercise exercise)
+	{
+		comments = await Http.GetFromJsonAsync<List<ExerciseComment>>($"/api/ExerciseComment/{selectedExercise!.Name}");
+	}
+
+	void AddComment()
+	{
+		commentToAdd = new ExerciseComment()
+		{
+			ExerciseName = selectedExercise!.Name,
+			UserName = ""
+		};
+		ShowPopup = true;
+	}
+
+	void CloseComment()
+	{
+		ShowPopup = false;
+	}
+
+	async Task SaveComment()
+	{
+		await Http.PostAsJsonAsync($"/api/ExerciseComment", commentToAdd);
+		comments = await Http.GetFromJsonAsync<List<ExerciseComment>>($"/api/ExerciseComment/{selectedExercise!.Name}");
+		CloseComment();
+	}
+
 }

@@ -17,6 +17,7 @@ namespace IA3Digital.Server.Data
 
 
         public virtual DbSet<Table> Table { get; set; }
+        public virtual DbSet<ExerciseComment> ExerciseComment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +30,12 @@ namespace IA3Digital.Server.Data
                 entity.Property(e => e.Summary).HasMaxLength(100);
 
                 entity.Property(e => e.UserName).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<ExerciseComment>(entity =>
+            {
+                entity.Property(e => e.ExerciseName).HasMaxLength(200);
+                entity.Property(e => e.UserName).HasMaxLength(200);
             });
 
         }

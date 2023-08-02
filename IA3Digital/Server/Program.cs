@@ -33,6 +33,7 @@ namespace IA3Digital
 
             // Scoped creates an instance per request
             builder.Services.AddScoped<ExerciseQuery>();
+            builder.Services.AddScoped<EquipmentQuery>();
 
             builder.Services.AddAuthentication()
                 .AddIdentityServerJwt();

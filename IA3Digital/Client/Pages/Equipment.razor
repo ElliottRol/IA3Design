@@ -1,0 +1,135 @@
+﻿@page "/equipment"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using IA3Digital.Shared
+
+@inject HttpClient Http
+
+<h1>Equitment Locations</h1>
+
+<!-- AuthorizeView allows us to only show sections of the page -->
+<!-- based on the security on the current user -->
+
+<AuthorizeView>
+
+	<!-- Show this section if the user is logged in -->
+
+	<Authorized>
+		<p>
+			Please Select a piece of equitment Group:
+			<select @onchange="SelectEquipment">
+				<option value="" selected>(Please Select)</option>
+				<option value="AB CRUNCH / LEG LIFT STATION">Biceps</option>
+				<option value="AB HIP SWINGER">Triceps</option>
+				<option value="ASSISTED ROW / PUSH UP STATION">Abdominals</option>
+				<option value="BALANCE BEAM">Abductors</option>
+				<option value="BALANCE STEPS STATION">Calves</option>
+				<option value="BUTTERFLY PRESS">Chest</option>
+				<option value="CLIMBER">Forearms</option>
+				<option value="CROSS TRAINER">Glutes</option>
+				<option value="CYCLE SEAT">Hamstrings</option>
+				<option value="EZY RIDER">Lats</option>
+				<option value="HAND WALK">Lower Back</option>
+				<option value="LAT PULL DOWN / SHOULDER PRESS">Middle Back</option>
+				<option value="LEG STRETCH">Neck</option>
+				<option value="MULTI ACTIVITY STATION">Quadriceps</option>
+				<option value="PARALLEL BARS">Traps</option>
+				<option value="PULL UP / DIP STATION">Traps</option>
+				<option value="PUSH UP STATION">Traps</option>
+				<option value="ROWING MACHINE">Traps</option>
+				<option value="SHOULDER PRESS">Traps</option>
+				<option value="SIT UP BENCH">Traps</option>
+				<option value="SQUAT PRESS">Traps</option>
+				<option value="STEP UP">Traps</option>
+				<option value="STEPPER MACHINE">Traps</option>
+				<option value="TAI CHI WHEEL">Traps</option>
+				<option value="VAULT BAR">Traps</option>
+
+			</select>
+		</p>
+
+		@if (equipment is not null)
+		{
+			<!-- Show the exercises -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Class</th>
+						<th>FitnessEquipment</th>
+						<th>Finish</th>
+						<th>Material</th>
+						<th>X_Cordinate</th>
+						<th>Y_Cordinate</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (selectedEquipment is null)
+					{
+						foreach (var e in equipment)
+						{
+							<tr @onclick="(()=>SelectEquipment(e))" class="clickable">
+								<td>@e.Id</td>
+								<td>@e.Class</td>
+								<td>@e.FitnessEquipment</td>
+								<td>@e.Finish</td>
+								<td>@e.Material</td>
+								<td>@e.X_Cordinate</td>
+								<td>@e.Y_Cordinate</td>
+								<td />
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td>@selectedEquipment.Id</td>
+							<td>@selectedEquipment.Class</td>
+							<td>@selectedEquipment.FitnessEquipment</td>
+							<td>@selectedEquipment.Finish</td>
+							<td>@selectedEquipment.Material</td>
+							<td>@selectedEquipment.X_Cordinate</td>
+							<td>@selectedEquipment.Y_Cordinate</td>
+							<td>
+								<button class="btn btn-primary" @onclick="(()=>SelectEquipment(null))">
+									Close
+								</button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	</Authorized>
+	<!-- Show this section if the user is not logged in -->
+	<NotAuthorized>
+		<p>You're not signed in.</p>
+	</NotAuthorized>
+</AuthorizeView>
+<PageTitle>Find Equipment Location</PageTitle>
+
+@code {
+	// Stores the forecasts displayed in a list
+	private List<Equipment>? equipment = null;
+	private Equipment? selectedEquipment = null;
+	
+	private async Task SelectEquipment(ChangeEventArgs e)
+	{
+		if (e.Value is not null)
+		{
+			string newSelection = (string)e.Value;
+
+			if (string.IsNullOrWhiteSpace(newSelection))
+			{
+				// clear exercises
+				equipment = null;
+			}
+			else
+			{
+				// fetch exercises
+				equipment = await Http.GetFromJsonAsync<List<Equipment>?>($"/api/Equipment/{newSelection}");
+			}
+		}
+	}
+}

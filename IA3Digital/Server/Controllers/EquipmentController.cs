@@ -22,7 +22,6 @@ namespace IA3Digital.Server.Controllers
         }
 
         [HttpGet]
-        [Route("{type}")]
         public async Task<List<Equipment>?> GetByType(string type)
         {
             _logger.LogInformation($"Requesting Equipment by type {type}");

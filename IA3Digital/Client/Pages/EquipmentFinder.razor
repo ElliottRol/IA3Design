@@ -1,0 +1,118 @@
+﻿@page "/equipment"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using IA3Digital.Shared
+
+@inject HttpClient Http
+
+<h1>Equitment Locations</h1>
+
+<!-- AuthorizeView allows us to only show sections of the page -->
+<!-- based on the security on the current user -->
+
+<AuthorizeView>
+
+	<!-- Show this section if the user is logged in -->
+
+	<Authorized>
+		<p>
+			Please Select a piece of equipment Group:
+			<select @onchange="SelectEquipment">
+				<option value="" selected>(Please Select)</option>
+				<option>AB CRUNCH / LEG LIFT STATION</option>
+				<option>AB HIP SWINGER</option>
+				<option>ASSISTED ROW / PUSH UP STATION</option>
+				<option>BALANCE BEAM</option>
+				<option>BALANCE STEPS STATION</option>
+				<option>BUTTERFLY PRESS</option>
+				<option>CLIMBER</option>
+				<option>CROSS TRAINER</option>
+				<option>CYCLE SEAT</option>
+				<option>EZY RIDER</option>
+				<option>HAND WALK</option>
+				<option>LAT PULL DOWN / SHOULDER PRESS</option>
+				<option>LEG STRETCH</option>
+				<option>MULTI ACTIVITY STATION</option>
+				<option>PARALLEL BARS</option>
+				<option>PULL UP / DIP STATION</option>
+				<option>PUSH UP STATION</option>
+				<option>ROWING MACHINE</option>
+				<option>SHOULDER PRESS</option>
+				<option>SIT UP BENCH</option>
+				<option>SQUAT PRESS</option>
+				<option>STEP UP</option>
+				<option>STEPPER MACHINE</option>
+				<option>TAI CHI WHEEL</option>
+				<option>VAULT BAR</option>
+			</select>
+		</p>
+
+		@if (equipment is not null)
+		{
+			<!-- Show the exercises -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Class</th>
+						<th>FitnessEquipment</th>
+						<th>Finish</th>
+						<th>Material</th>
+						<th>X_Cordinate</th>
+						<th>Y_Cordinate</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var r in equipment)
+					{
+						<tr>
+							<td>@r.Id</td>
+							<td>@r.Class</td>
+							<td>@r.FitnessEquipment</td>
+							<td>@r.Finish</td>
+							<td>@r.Material</td>
+							<td>@r.X_Cordinate</td>
+							<td>@r.Y_Cordinate</td>
+							<td />
+						</tr>
+					}
+				</tbody>
+			</table>
+			@if(equipment.Count == 0)
+			{
+				<p><em>No matching equipment was found</em></p>
+			}
+		}
+	</Authorized>
+	<!-- Show this section if the user is not logged in -->
+	<NotAuthorized>
+		<p>You're not signed in.</p>
+	</NotAuthorized>
+</AuthorizeView>
+<PageTitle>Find Equipment Location</PageTitle>
+
+@code {
+	// Stores the forecasts displayed in a list
+	private List<Equipment>? equipment = null;
+
+	private async Task SelectEquipment(ChangeEventArgs r)
+	{
+		if (r.Value is not null)
+		{
+			string newSelection = (string)r.Value;
+
+			if (string.IsNullOrWhiteSpace(newSelection))
+			{
+				// clear exercises
+				equipment = null;
+			}
+			else
+			{
+				// fetch exercises
+				var url = $"/api/Equipment?type={Uri.EscapeDataString(newSelection)}";
+				equipment = await Http.GetFromJsonAsync<List<Equipment>?>(url);
+			}
+		}
+	}
+}

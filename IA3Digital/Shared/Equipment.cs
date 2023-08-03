@@ -14,9 +14,9 @@ namespace IA3Digital.Shared
 		public string FitnessEquipment { get; set; } = default!;
 
 		[JsonPropertyName("FINISH")]
-		public string Finish { get; set } = default!;
+		public string Finish { get; set; } = default!;
 
-		[JsonPropertyName("FITNESS_1")]
+		[JsonPropertyName("FITNESS__1")]
 		public string Material { get; set; } = default!;
 
 		[JsonPropertyName("POINT_X")]
